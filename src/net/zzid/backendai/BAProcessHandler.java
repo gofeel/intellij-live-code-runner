@@ -35,15 +35,6 @@ public class BAProcessHandler extends ProcessHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        start();
-                    }
-                },
-                0
-        );
     }
 
     @Override
@@ -56,7 +47,10 @@ public class BAProcessHandler extends ProcessHandler {
 
     @Override
     protected void detachProcessImpl() {
-
+        if(kernel != null) {
+            this.notifyTextAvailable(String.format("\nStopped.", kernel.getId()), ProcessOutputTypes.SYSTEM);
+            destoryKernel();
+        }
     }
 
     @Override
@@ -77,6 +71,11 @@ public class BAProcessHandler extends ProcessHandler {
 
     public void start() {
         Config config;
+        if(accessKey == null || accessKey.isEmpty() || secretKey == null || secretKey.isEmpty()) {
+            this.notifyTextAvailable("Backend AI Error : Configuration failed. Check your keys.", ProcessOutputTypes.SYSTEM);
+            terminateProcess();
+            return;
+        }
         try {
             config = new Config.Builder().accessKey(accessKey).secretKey(secretKey).build();
         } catch (ConfigurationException e) {
@@ -85,13 +84,13 @@ public class BAProcessHandler extends ProcessHandler {
             return;
         }
 
-        if(kernelType.equals("unknown")) {
+        if(this.kernelType.equals("unknown")) {
             this.notifyTextAvailable(String.format("\nBackend AI Error : Can't find a suitable kernel."), ProcessOutputTypes.SYSTEM);
             terminateProcess();
             return;
         }
         try {
-            kernel = Kernel.newInstance(kernelType, config);
+            kernel = Kernel.newInstance(this.kernelType, config);
         } catch (NetworkFailException e) {
             this.notifyTextAvailable(String.format("\nBackend AI Error : Network error"), ProcessOutputTypes.SYSTEM);
             terminateProcess();

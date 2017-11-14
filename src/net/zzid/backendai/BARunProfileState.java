@@ -48,18 +48,18 @@ public class BARunProfileState implements RunProfileState {
     @Nullable
     @Override
     public ExecutionResult execute(Executor executor, @NotNull ProgramRunner programRunner) throws ExecutionException {
-        final ProcessHandler processHandler = startProcess();
+        final BAProcessHandler processHandler = startProcess();
         final ConsoleView console = createConsole(executor);
 
         if (console != null) {
             console.attachToProcess(processHandler);
         }
         ConsoleViewImpl c = (ConsoleViewImpl) console;
-
+        processHandler.start();
         return new DefaultExecutionResult(console, processHandler, createActions(console, processHandler, executor));
     }
 
-    protected ProcessHandler startProcess() throws ExecutionException {
+    protected BAProcessHandler startProcess() throws ExecutionException {
         String scriptPath = runConfiguration.getScriptPath();
         String accessKey = runConfiguration.getAccessKey();
         String secretKey = runConfiguration.getSecretKey();

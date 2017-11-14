@@ -3,6 +3,7 @@ package net.zzid.backendai;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.ConfigurationFactory;
+import com.intellij.execution.configurations.LocatableConfigurationBase;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.runners.ExecutionEnvironment;
@@ -15,7 +16,7 @@ import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class BARunConfiguration extends RunConfigurationBase {
+public class BARunConfiguration extends LocatableConfigurationBase {
     private static final String SCRIPT_PATH_URL = "scriptUrl";
     private static final String ACCESS_KEY = "accessKey";
     private static final String SECRET_KEY = "secretKey";
@@ -24,7 +25,7 @@ public class BARunConfiguration extends RunConfigurationBase {
     private String scriptPath;
     private String accessKey;
     private String secretKey;
-    private String kernelType;
+    private String kernelType = "auto";
 
     protected BARunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, String name) {
         super(project, factory, name);
