@@ -1,0 +1,25 @@
+<idea-plugin>
+  <id>net.zzid.backendai.live-code-runner</id>
+  <name>Live Code Runner</name>
+  <version>0.1</version>
+  <vendor email="jpkoh@loc.bz" url="http://www.loc.bz">Locbz</vendor>
+
+  <description><![CDATA[
+      Hi-ya.
+    ]]></description>
+
+  <change-notes><![CDATA[
+    It works like magic.
+    ]]>
+  </change-notes>
+
+  <idea-version since-build="151.0"/>
+  <depends>com.intellij.modules.lang</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <configurationType implementation="net.zzid.backendai.BAConfigurationType"/>
+    <runConfigurationProducer implementation="net.zzid.backendai.BARunConfigurationProducer"/>
+
+  </extensions>
+
+</idea-plugin>
