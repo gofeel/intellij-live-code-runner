@@ -11,7 +11,7 @@ import javax.swing.*;
 
 public class BAConfigurationType extends ConfigurationTypeBase {
     public BAConfigurationType(){
-        super("BackendAIConfigurationType", "BackendAI", "Remote Backend AI run configuration", IconLoader.getIcon("/icons/icon.png"));
+        super("BackendAIConfigurationType", "_BackendAI", "Remote Backend AI run configuration", IconLoader.getIcon("/icons/icon.png"));
         addFactory(new ConfigurationFactory(this) {
             @Override
             public boolean isConfigurationSingletonByDefault() {
