@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>net.zzid.backendai.live-code-runner</id>
   <name>Live Code Runner</name>
-  <version>0.2</version>
+  <version>0.3</version>
   <vendor email="jpkoh@loc.bz" url="http://www.loc.bz">Locbz</vendor>
 
   <description><![CDATA[

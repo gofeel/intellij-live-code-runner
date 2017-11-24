@@ -40,8 +40,9 @@ public class BAProcessHandler extends ProcessHandler {
     @Override
     protected void destroyProcessImpl() {
         if(kernel != null) {
-            this.notifyTextAvailable(String.format("\nStopped.", kernel.getId()), ProcessOutputTypes.SYSTEM);
-            destoryKernel();
+            //this.notifyTextAvailable(String.format("\nInterupted.", kernel.getId()), ProcessOutputTypes.SYSTEM);
+            //System.out.println("destroy");
+            interuptKernel();
         }
     }
 
@@ -49,7 +50,7 @@ public class BAProcessHandler extends ProcessHandler {
     protected void detachProcessImpl() {
         if(kernel != null) {
             this.notifyTextAvailable(String.format("\nStopped.", kernel.getId()), ProcessOutputTypes.SYSTEM);
-            destoryKernel();
+            stopKernel();
         }
     }
 
@@ -90,7 +91,7 @@ public class BAProcessHandler extends ProcessHandler {
             return;
         }
         try {
-            kernel = Kernel.newInstance(this.kernelType, config);
+            kernel = Kernel.getOrCreateInstance(null, this.kernelType, config);
         } catch (NetworkFailException e) {
             this.notifyTextAvailable(String.format("\nBackend AI Error : Network error"), ProcessOutputTypes.SYSTEM);
             terminateProcess();
@@ -117,7 +118,7 @@ public class BAProcessHandler extends ProcessHandler {
 
         if(result.isFinished()) {
             this.notifyTextAvailable(String.format("\nProcess Finished", kernel.getId()), ProcessOutputTypes.SYSTEM);
-            destoryKernel();
+            stopKernel();
         } else {
             final String input;
             String tmp_input;
@@ -144,8 +145,14 @@ public class BAProcessHandler extends ProcessHandler {
         }
     }
 
-    private void destoryKernel() {
-        kernel.destroy();
+    private void interuptKernel() {
+        kernel.interrupt();
+        //runCode("");
+    }
+
+
+    private void stopKernel() {
+//        kernel.destroy();
         terminateProcess();
     }
 

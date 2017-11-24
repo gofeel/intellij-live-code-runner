@@ -80,7 +80,7 @@ public class BARunProfileState implements RunProfileState {
             e.printStackTrace();
         }
 
-        if (kernelType == "auto") {
+        if (kernelType.equals("auto")) {
             kernelType = findKernelFromPathAndCode(scriptPath, code);
         }
 
