@@ -40,8 +40,6 @@ public class BAProcessHandler extends ProcessHandler {
     @Override
     protected void destroyProcessImpl() {
         if(kernel != null) {
-            //this.notifyTextAvailable(String.format("\nInterupted.", kernel.getId()), ProcessOutputTypes.SYSTEM);
-            //System.out.println("destroy");
             interuptKernel();
         }
     }
