@@ -6,6 +6,7 @@ import ai.backend.client.RunResult;
 import ai.backend.client.exceptions.AuthorizationFailException;
 import ai.backend.client.exceptions.ConfigurationException;
 import ai.backend.client.exceptions.NetworkFailException;
+import ai.backend.client.exceptions.ResourceLimitException;
 import ai.backend.client.values.RunStatus;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessOutputTypes;
@@ -98,6 +99,9 @@ public class BAProcessHandler extends ProcessHandler {
             this.notifyTextAvailable(String.format("\nBackend AI Error : Authorization failed. Check your keys."), ProcessOutputTypes.SYSTEM);
             terminateProcess();
             return;
+        } catch (ResourceLimitException e) {
+            this.notifyTextAvailable(String.format("\nBackend AI Error : Resource is full. Check your limit for backend ai service."), ProcessOutputTypes.SYSTEM);
+            terminateProcess();
         }
         this.notifyTextAvailable(String.format("Backend AI Info : %s Kernel is ready : %s\n", kernelType, kernel.getId()), ProcessOutputTypes.SYSTEM);
         runCode(code);
