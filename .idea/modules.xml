@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/intellij-live-code-runner.iml" filepath="$PROJECT_DIR$/intellij-live-code-runner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/intellij-live-code-runner_main.iml" filepath="$PROJECT_DIR$/.idea/modules/intellij-live-code-runner_main.iml" group="intellij-live-code-runner" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/intellij-live-code-runner_test.iml" filepath="$PROJECT_DIR$/.idea/modules/intellij-live-code-runner_test.iml" group="intellij-live-code-runner" />
     </modules>
   </component>
 </project>

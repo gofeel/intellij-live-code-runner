@@ -1,0 +1,34 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+  id "org.jetbrains.intellij" version "0.2.17"
+}
+
+apply plugin: 'idea'
+apply plugin: 'org.jetbrains.intellij'
+apply plugin: 'java'
+
+intellij {
+    type 'IC'
+    version '173.3531.6' // https://www.jetbrains.com/intellij-repository/[releases|snapshots]
+    pluginName '_BackendAI'
+    updateSinceUntilBuild = false
+}
+
+group 'net.zzid.backendai'
+version '0.4'
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+    //testCompile name: 'PsiViewer'
+}
