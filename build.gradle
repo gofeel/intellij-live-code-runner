@@ -1,12 +1,13 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
-
 plugins {
   id "org.jetbrains.intellij" version "0.2.17"
 }
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
 
 apply plugin: 'idea'
 apply plugin: 'org.jetbrains.intellij'
@@ -23,12 +24,9 @@ group 'net.zzid.backendai'
 version '0.4'
 
 repositories {
-    flatDir {
-        dirs 'libs'
-    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
-    //testCompile name: 'PsiViewer'
+    compile 'com.github.gofeel.backend~ai-client-java:backend.ai-client:develop-SNAPSHOT'
 }
+
