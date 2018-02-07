@@ -16,20 +16,18 @@ import java.awt.event.ActionListener;
 public class BARunConfigurationEditor extends SettingsEditor<BARunConfiguration> implements ActionListener {
     private final BARunConfiguration runConfiguration;
     private JPanel mainPanel;
-    private TextFieldWithBrowseButton scriptTextField;
     private JTextField accessKeyField;
     private JTextField secretKeyField;
     private JComboBox kernelTypeComboBox;
+    private JTextField buildCmdField;
+    private JTextField execCmdField;
 
 
     BARunConfigurationEditor(Project project, BARunConfiguration runConfiguration) {
         this.runConfiguration = runConfiguration;
-        FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, false, false, false);
-        scriptTextField.addBrowseFolderListener("Choose Script", "Please choose script to run", project, descriptor);
         kernelTypeComboBox.addActionListener( this );
-        //TODO: ind some better way to register.
+        //TODO: Find some better way to register.
 
-        kernelTypeComboBox.addItem(new Item("auto", "<<<Auto>>>"));
         kernelTypeComboBox.addItem(new Item("python3", "Python 3"));
         kernelTypeComboBox.addItem(new Item("tensorflow-python3-gpu", "Python 3 with TensorFlow/Keras"));
         kernelTypeComboBox.addItem(new Item("python3-theano", "Python 3 with Theano"));
@@ -46,35 +44,37 @@ public class BARunConfigurationEditor extends SettingsEditor<BARunConfiguration>
 
     @Override
     protected void resetEditorFrom(BARunConfiguration runConfiguration) {
-        String scriptPath = runConfiguration.getScriptPath();
         String accessKey = runConfiguration.getAccessKey();
         String secretKey = runConfiguration.getSecretKey();
         String kernelType = runConfiguration.getKernelType();
+        String buildCmd = runConfiguration.getBuildCmd();
+        String execCmd = runConfiguration.getExecCmd();
 
-        if (!StringUtil.isEmpty(scriptPath)) {
-            scriptTextField.setText(scriptPath);
-            String[] parts = scriptPath.split("/");
-            if (parts.length > 0) {
-                runConfiguration.setName(parts[parts.length - 1]);
-            }
-        }
+
         if (!StringUtil.isEmpty(accessKey)) {
             accessKeyField.setText(accessKey);
         }
         if (!StringUtil.isEmpty(secretKey)) {
             secretKeyField.setText(secretKey);
         }
-
         if (!StringUtil.isEmpty(kernelType)) {
             this.setSelectedValue(kernelTypeComboBox, kernelType);
+        }
+        if (!StringUtil.isEmpty(buildCmd)) {
+            buildCmdField.setText(buildCmd);
+        }
+        if (!StringUtil.isEmpty(execCmd)) {
+            execCmdField.setText(execCmd);
         }
     }
 
     @Override
     protected void applyEditorTo(BARunConfiguration runConfiguration) throws ConfigurationException {
-        runConfiguration.setScriptPath(scriptTextField.getText().trim());
         runConfiguration.setAccessKey(accessKeyField.getText().trim());
         runConfiguration.setSecretKey(secretKeyField.getText().trim());
+        runConfiguration.setBuildCmd(buildCmdField.getText().trim());
+        runConfiguration.setExecCmd(execCmdField.getText().trim());
+
         Item item = (Item) kernelTypeComboBox.getSelectedItem();
         runConfiguration.setKernelType(item.getId());
     }

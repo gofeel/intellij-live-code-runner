@@ -15,7 +15,7 @@ apply plugin: 'java'
 
 intellij {
     type 'IC'
-    version '173.3531.6' // https://www.jetbrains.com/intellij-repository/[releases|snapshots]
+    version 'IC-2018.2.4' // https://www.jetbrains.com/intellij-repository/[releases|snapshots]
     pluginName '_BackendAI'
     updateSinceUntilBuild = false
 }
@@ -27,6 +27,6 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.gofeel.backend~ai-client-java:backend.ai-client:develop-SNAPSHOT'
+    compile 'com.github.gofeel.backend~ai-client-java:backend.ai-client:master-SNAPSHOT'
+    compile 'commons-io:commons-io:2.6'
 }
-

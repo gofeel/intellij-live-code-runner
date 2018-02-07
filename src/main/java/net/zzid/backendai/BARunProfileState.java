@@ -20,6 +20,7 @@ import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.actionSystem.ToggleAction;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.DumbAware;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,79 +55,21 @@ public class BARunProfileState implements RunProfileState {
         if (console != null) {
             console.attachToProcess(processHandler);
         }
-        ConsoleViewImpl c = (ConsoleViewImpl) console;
-        processHandler.start();
+        Project p = this.env.getProject();
+
+        processHandler.start(p);
         return new DefaultExecutionResult(console, processHandler, createActions(console, processHandler, executor));
     }
 
     protected BAProcessHandler startProcess() throws ExecutionException {
-        String scriptPath = runConfiguration.getScriptPath();
         String accessKey = runConfiguration.getAccessKey();
         String secretKey = runConfiguration.getSecretKey();
         String kernelType = runConfiguration.getKernelType();
+        String buildCmd = runConfiguration.getBuildCmd();
+        String execCmd = runConfiguration.getExecCmd();
 
-        String code = "";
-
-        byte[] encoded = new byte[0];
-        try {
-            encoded = Files.readAllBytes(Paths.get(scriptPath));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            code = new String(encoded, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        if (kernelType.equals("auto")) {
-            kernelType = findKernelFromPathAndCode(scriptPath, code);
-        }
-
-        BAProcessHandler baProcessHandler = new BAProcessHandler(code, accessKey, secretKey, kernelType);
+        BAProcessHandler baProcessHandler = new BAProcessHandler(accessKey, secretKey, kernelType, buildCmd, execCmd);
         return baProcessHandler;
-    }
-
-    private String findKernelFromPathAndCode(String scriptPath, String code) {
-        File f = new File(scriptPath);
-        String filename = f.getName();
-        String ext;
-
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("py", "python3");
-        map.put("php", "php7");
-        map.put("r", "r3");
-        map.put("lua", "lua");
-        map.put("js", "nodejs4");
-        map.put("hs", "haskell");
-        map.put("m", "octave4");
-
-        if(filename.lastIndexOf(".") != -1) {
-            ext =  filename.substring(filename.lastIndexOf(".") + 1);
-        } else {
-            ext = "unknown";
-        }
-
-        String kernelType = map.get(ext);
-        if(kernelType == null) {
-            kernelType = "unknown";
-        }
-
-        // Python magic
-        if(kernelType == "python3") {
-            if (code.indexOf("tensorflow") > 0) {
-                kernelType = "tensorflow-python3-gpu";
-            } else if (code.indexOf("keras") > 0) {
-                kernelType = "tensorflow-python3-gpu";
-            } else if (code.indexOf("theano") > 0) {
-                kernelType = "python3-theano";
-            } else if (code.indexOf("caffe") > 0) {
-                kernelType = "python3-caffe";
-            }
-        }
-
-        return kernelType;
     }
 
     protected ConsoleView createConsole(@NotNull final Executor executor) throws ExecutionException {
