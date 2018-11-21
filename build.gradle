@@ -22,7 +22,7 @@ intellij {
 }
 
 group 'net.zzid.backendai'
-version '0.5'
+version '1.0'
 
 repositories {
 }
