@@ -4,7 +4,6 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.LocatableConfigurationBase;
-import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.options.SettingsEditor;
@@ -51,9 +50,8 @@ public class BARunConfiguration extends LocatableConfigurationBase {
         String accessKey = element.getAttributeValue(ACCESS_KEY);
         String secretKey = element.getAttributeValue(SECRET_KEY);
         String kernelType = element.getAttributeValue(KERNEL_TYPE_KEY);
-        String execCmd = element.getAttributeValue(BUILD_CMD_KEY);
-        String buildCmd = element.getAttributeValue(EXEC_CMD_KEY);
-
+        String execCmd = element.getAttributeValue(EXEC_CMD_KEY);
+        String buildCmd = element.getAttributeValue(BUILD_CMD_KEY);
         if (!StringUtil.isEmpty(accessKey)) {
             this.accessKey = accessKey;
         }
