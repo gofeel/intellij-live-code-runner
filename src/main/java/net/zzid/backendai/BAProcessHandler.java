@@ -23,19 +23,27 @@ import java.io.*;
 import java.util.*;
 
 public class BAProcessHandler extends ProcessHandler {
+
+    private PipedInputStream  inputStream;
+    private final PipedOutputStream outputStream;
+
+    private final String accessKey;
     private final String secretKey;
-    final PipedOutputStream outputStream;
+    private final String endPoint;
+
     private final String buildCmd;
     private final String execCmd;
-    PipedInputStream  inputStream;
-    private Kernel kernel;
-    private String accessKey;
     private final String kernelType;
 
-    public BAProcessHandler(String accessKey, String secretKey, String kernelType, String buildCmd, String execCmd) {
+    private Kernel kernel;
+
+
+    public BAProcessHandler(String accessKey, String secretKey, String kernelType, String buildCmd, String execCmd, String endPoint) {
         super();
         this.accessKey = accessKey;
         this.secretKey = secretKey;
+        this.endPoint = endPoint;
+
         this.buildCmd = buildCmd;
         this.execCmd = execCmd;
 
@@ -97,7 +105,7 @@ public class BAProcessHandler extends ProcessHandler {
             return;
         }
         try {
-            config = new ClientConfig.Builder().accessKey(accessKey).secretKey(secretKey).build();
+            config = new ClientConfig.Builder().accessKey(accessKey).secretKey(secretKey).endPoint(endPoint).build();
         } catch (ConfigurationException e) {
             this.notifyTextAvailable(String.format("\nBackend AI Error : Configuration failed. Check your keys."), ProcessOutputTypes.SYSTEM);
             terminateProcess();

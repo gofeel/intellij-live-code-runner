@@ -16,12 +16,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BARunConfiguration extends LocatableConfigurationBase {
+    private static final String ENDPOINT_KEY = "endPoint";
     private static final String ACCESS_KEY = "accessKey";
     private static final String SECRET_KEY = "secretKey";
     private static final String KERNEL_TYPE_KEY = "kernelType";
     private static final String BUILD_CMD_KEY = "buildCmd";
     private static final String EXEC_CMD_KEY = "execCmd";
 
+    private String endPoint = "https://api.backend.ai";
     private String accessKey;
     private String secretKey;
     private String kernelType = "auto";
@@ -47,11 +49,15 @@ public class BARunConfiguration extends LocatableConfigurationBase {
     @Override
     public void readExternal(Element element) throws InvalidDataException {
         super.readExternal(element);
+        String endPoint = element.getAttributeValue(ENDPOINT_KEY);
         String accessKey = element.getAttributeValue(ACCESS_KEY);
         String secretKey = element.getAttributeValue(SECRET_KEY);
         String kernelType = element.getAttributeValue(KERNEL_TYPE_KEY);
         String execCmd = element.getAttributeValue(EXEC_CMD_KEY);
         String buildCmd = element.getAttributeValue(BUILD_CMD_KEY);
+        if (!StringUtil.isEmpty(endPoint)) {
+            this.endPoint = endPoint;
+        }
         if (!StringUtil.isEmpty(accessKey)) {
             this.accessKey = accessKey;
         }
@@ -71,6 +77,9 @@ public class BARunConfiguration extends LocatableConfigurationBase {
     @Override
     public void writeExternal(Element element) throws WriteExternalException {
         super.writeExternal(element);
+        if (!StringUtil.isEmpty(endPoint)) {
+            element.setAttribute(ENDPOINT_KEY, endPoint);
+        }
         if (!StringUtil.isEmpty(accessKey)) {
             element.setAttribute(ACCESS_KEY, accessKey);
         }
@@ -87,6 +96,15 @@ public class BARunConfiguration extends LocatableConfigurationBase {
             element.setAttribute(EXEC_CMD_KEY, execCmd);
         }
     }
+
+    public String getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(String endPoint) {
+        this.endPoint = endPoint;
+    }
+
     public String getAccessKey() {
         return accessKey;
     }

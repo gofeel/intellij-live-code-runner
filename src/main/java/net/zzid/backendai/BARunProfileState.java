@@ -62,13 +62,15 @@ public class BARunProfileState implements RunProfileState {
     }
 
     protected BAProcessHandler startProcess() throws ExecutionException {
+        String endPoint = runConfiguration.getEndPoint();
         String accessKey = runConfiguration.getAccessKey();
         String secretKey = runConfiguration.getSecretKey();
+
         String kernelType = runConfiguration.getKernelType();
         String buildCmd = runConfiguration.getBuildCmd();
         String execCmd = runConfiguration.getExecCmd();
 
-        BAProcessHandler baProcessHandler = new BAProcessHandler(accessKey, secretKey, kernelType, buildCmd, execCmd);
+        BAProcessHandler baProcessHandler = new BAProcessHandler(accessKey, secretKey, kernelType, buildCmd, execCmd, endPoint);
         return baProcessHandler;
     }
 

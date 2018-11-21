@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 public class BARunConfigurationEditor extends SettingsEditor<BARunConfiguration> implements ActionListener {
     private final BARunConfiguration runConfiguration;
     private JPanel mainPanel;
+    private JTextField endPointField;
     private JTextField accessKeyField;
     private JTextField secretKeyField;
     private JComboBox kernelTypeComboBox;
@@ -44,13 +45,16 @@ public class BARunConfigurationEditor extends SettingsEditor<BARunConfiguration>
 
     @Override
     protected void resetEditorFrom(BARunConfiguration runConfiguration) {
+        String endPoint = runConfiguration.getEndPoint();
         String accessKey = runConfiguration.getAccessKey();
         String secretKey = runConfiguration.getSecretKey();
         String kernelType = runConfiguration.getKernelType();
         String buildCmd = runConfiguration.getBuildCmd();
         String execCmd = runConfiguration.getExecCmd();
 
-
+        if (!StringUtil.isEmpty(endPoint)) {
+            endPointField.setText(endPoint);
+        }
         if (!StringUtil.isEmpty(accessKey)) {
             accessKeyField.setText(accessKey);
         }
@@ -70,8 +74,11 @@ public class BARunConfigurationEditor extends SettingsEditor<BARunConfiguration>
 
     @Override
     protected void applyEditorTo(BARunConfiguration runConfiguration) throws ConfigurationException {
+
+        runConfiguration.setEndPoint(endPointField.getText().trim());
         runConfiguration.setAccessKey(accessKeyField.getText().trim());
         runConfiguration.setSecretKey(secretKeyField.getText().trim());
+
         runConfiguration.setBuildCmd(buildCmdField.getText().trim());
         runConfiguration.setExecCmd(execCmdField.getText().trim());
 
