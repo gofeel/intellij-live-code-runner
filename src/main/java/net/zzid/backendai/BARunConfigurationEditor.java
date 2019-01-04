@@ -30,7 +30,8 @@ public class BARunConfigurationEditor extends SettingsEditor<BARunConfiguration>
         //TODO: Find some better way to register.
 
         kernelTypeComboBox.addItem(new Item("python3", "Python 3"));
-        kernelTypeComboBox.addItem(new Item("tensorflow-python3-gpu", "Python 3 with TensorFlow/Keras"));
+        kernelTypeComboBox.addItem(new Item("python-tensorflow:1.12", "Python 3 with TensorFlow/Keras"));
+        kernelTypeComboBox.addItem(new Item("python-tensorflow:1.12-gpu", "Python 3 with TensorFlow/Keras with GPU"));
         kernelTypeComboBox.addItem(new Item("python3-theano", "Python 3 with Theano"));
         kernelTypeComboBox.addItem(new Item("python3-caffe", "Python 3 with Caffe"));
         kernelTypeComboBox.addItem(new Item("python2", "Python 2"));
