@@ -213,7 +213,13 @@ public class BAProcessHandler extends ProcessHandler {
     }
 
     private void interruptKernel() {
-        kernel.interrupt();
+        Runnable task = () -> {
+            kernel.interrupt();
+            kernel.destroy();
+            stopKernel();
+        };
+        new Thread(task).start();
+
     }
 
 
