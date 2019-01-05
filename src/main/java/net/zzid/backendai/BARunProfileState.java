@@ -70,8 +70,7 @@ public class BARunProfileState implements RunProfileState {
         String buildCmd = runConfiguration.getBuildCmd();
         String execCmd = runConfiguration.getExecCmd();
 
-        BAProcessHandler baProcessHandler = new BAProcessHandler(accessKey, secretKey, kernelType, buildCmd, execCmd, endPoint);
-        return baProcessHandler;
+        return new BAProcessHandler(accessKey, secretKey, kernelType, buildCmd, execCmd, endPoint);
     }
 
     protected ConsoleView createConsole(@NotNull final Executor executor) throws ExecutionException {
@@ -90,54 +89,6 @@ public class BARunProfileState implements RunProfileState {
 
     @NotNull
     protected AnAction[] createActions(final ConsoleView console, final ProcessHandler processHandler, Executor executor) {
-        if (console == null || !console.canPause() || (executor != null && !DefaultRunExecutor.EXECUTOR_ID.equals(executor.getId()))) {
-            return AnAction.EMPTY_ARRAY;
-        }
-        return new AnAction[]{new PauseOutputAction(console, processHandler)};
-    }
-
-    protected static class PauseOutputAction extends ToggleAction implements DumbAware {
-        private final ConsoleView myConsole;
-        private final ProcessHandler myProcessHandler;
-
-        public PauseOutputAction(final ConsoleView console, final ProcessHandler processHandler) {
-            super(ExecutionBundle.message("run.configuration.pause.output.action.name"), null, AllIcons.Actions.Pause);
-            myConsole = console;
-            myProcessHandler = processHandler;
-        }
-
-        @Override
-        public boolean isSelected(final AnActionEvent event) {
-            return myConsole.isOutputPaused();
-        }
-
-        @Override
-        public void setSelected(final AnActionEvent event, final boolean flag) {
-            myConsole.setOutputPaused(flag);
-            ApplicationManager.getApplication().invokeLater(() -> update(event));
-        }
-
-        @Override
-        public void update(@NotNull final AnActionEvent event) {
-            super.update(event);
-            final Presentation presentation = event.getPresentation();
-            final boolean isRunning = myProcessHandler != null && !myProcessHandler.isProcessTerminated();
-            if (isRunning) {
-                presentation.setEnabled(true);
-            }
-            else {
-                if (!myConsole.canPause()) {
-                    presentation.setEnabled(false);
-                    return;
-                }
-                if (!myConsole.hasDeferredOutput()) {
-                    presentation.setEnabled(false);
-                }
-                else {
-                    presentation.setEnabled(true);
-                    myConsole.performWhenNoDeferredOutput(() -> update(event));
-                }
-            }
-        }
+        return AnAction.EMPTY_ARRAY;
     }
 }

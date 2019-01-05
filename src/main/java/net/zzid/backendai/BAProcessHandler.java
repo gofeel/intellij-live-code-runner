@@ -24,6 +24,7 @@ import java.util.*;
 
 public class BAProcessHandler extends ProcessHandler {
 
+    private String sessionId;
     private PipedInputStream  inputStream;
     private final PipedOutputStream outputStream;
 
@@ -49,7 +50,7 @@ public class BAProcessHandler extends ProcessHandler {
 
         this.kernelType = kernelType;
         outputStream = new PipedOutputStream();
-
+        this.sessionId = null;
         try {
             inputStream  = new PipedInputStream(outputStream);
         } catch (IOException e) {
@@ -68,7 +69,7 @@ public class BAProcessHandler extends ProcessHandler {
     protected void detachProcessImpl() {
         if(kernel != null) {
             this.notifyTextAvailable(String.format("\nStopped.", kernel.getId()), ProcessOutputTypes.SYSTEM);
-            stopKernel();
+            terminateProcess();
         }
     }
 
@@ -119,7 +120,8 @@ public class BAProcessHandler extends ProcessHandler {
         }
 
         try {
-            kernel = Kernel.getOrCreateInstance(null, this.kernelType, config);
+            kernel = Kernel.getOrCreateInstance(this.sessionId, this.kernelType, config);
+            this.sessionId = kernel.getId();
         } catch (NetworkFailureException e) {
             this.notifyTextAvailable(String.format("\nBackend AI Error : Network error"), ProcessOutputTypes.SYSTEM);
             terminateProcess();
@@ -195,9 +197,8 @@ public class BAProcessHandler extends ProcessHandler {
             this.notifyTextAvailable(result.getStderr(), ProcessOutputTypes.STDERR);
 
             if (result.isFinished()) {
-                this.notifyTextAvailable(String.format("\nProcess Finished", this.kernel.getId()), ProcessOutputTypes.SYSTEM);
-                stopKernel();
-                notifyProcessTerminated(0);
+                this.notifyTextAvailable(String.format("\nProcess Finished"), ProcessOutputTypes.SYSTEM);
+                terminateProcess();
                 break;
             }
             if (result.getStatus() == RunStatus.WAITING_INPUT) {
@@ -215,21 +216,13 @@ public class BAProcessHandler extends ProcessHandler {
     private void interruptKernel() {
         Runnable task = () -> {
             kernel.interrupt();
-            kernel.destroy();
-            stopKernel();
+            terminateProcess();
         };
         new Thread(task).start();
-
-    }
-
-
-    private void stopKernel() {
-        terminateProcess();
     }
 
     private void terminateProcess() {
         this.notifyProcessTerminated(0);
         kernel = null;
     }
-
 }
