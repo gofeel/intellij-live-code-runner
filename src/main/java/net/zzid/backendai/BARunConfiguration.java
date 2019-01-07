@@ -29,6 +29,7 @@ public class BARunConfiguration extends LocatableConfigurationBase {
     private String kernelType = "auto";
     private String buildCmd = "*";
     private String execCmd = "*";
+    private String sessionId = null;
 
     protected BARunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, String name) {
         super(project, factory, name);
@@ -44,7 +45,6 @@ public class BARunConfiguration extends LocatableConfigurationBase {
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) throws ExecutionException {
         return new BARunProfileState(this, executionEnvironment);
     }
-
 
     @Override
     public void readExternal(Element element) throws InvalidDataException {
@@ -96,52 +96,67 @@ public class BARunConfiguration extends LocatableConfigurationBase {
             element.setAttribute(EXEC_CMD_KEY, execCmd);
         }
     }
-
-    public String getEndPoint() {
+    String getEndPoint() {
         return endPoint;
     }
 
-    public void setEndPoint(String endPoint) {
+    void setEndPoint(String endPoint) {
+        updateSessionId();
+
         this.endPoint = endPoint;
     }
 
-    public String getAccessKey() {
+    String getAccessKey() {
         return accessKey;
     }
 
-    public void setAccessKey(String accessKey) {
+    void setAccessKey(String accessKey) {
+        updateSessionId();
         this.accessKey = accessKey;
     }
 
-    public String getSecretKey() {
+    String getSecretKey() {
         return secretKey;
     }
 
-    public void setSecretKey(String secretKey) {
+    void setSecretKey(String secretKey) {
+        updateSessionId();
         this.secretKey = secretKey;
     }
 
-    public String getKernelType() {
+    String getKernelType() {
         return kernelType;
     }
 
-    public void setKernelType(String kernelType) {
+    void setKernelType(String kernelType) {
+        updateSessionId();
         this.kernelType = kernelType;
     }
 
-    public String getBuildCmd() {
+    String getBuildCmd() {
         return buildCmd;
     }
 
-    public String getExecCmd() {
+    String getExecCmd() {
         return execCmd;
     }
 
-    public void setBuildCmd(String buildCmd) {
+    void setBuildCmd(String buildCmd) {
         this.buildCmd = buildCmd;
     }
 
-    public void setExecCmd(String execCmd) {
+    void setExecCmd(String execCmd) {
         this.execCmd = execCmd;
+    }
+
+    void updateSessionId() {
+        sessionId = java.util.UUID.randomUUID().toString();
+
+    }
+    String getSessionId() {
+        if(sessionId == null) {
+            updateSessionId();
+        }
+        return sessionId;
     }
 }

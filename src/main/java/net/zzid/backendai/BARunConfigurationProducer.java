@@ -19,13 +19,11 @@ public class BARunConfigurationProducer extends RunConfigurationProducer<BARunCo
     protected boolean setupConfigurationFromContext(BARunConfiguration runConfiguration, ConfigurationContext configurationContext, Ref ref) {
         PsiElement elem = configurationContext.getPsiLocation();
         PsiFile file = elem != null ? elem.getContainingFile() : null;
-        if (file == null) return false;
-        return true;
+        return file != null;
     }
 
     @Override
     public boolean isConfigurationFromContext(BARunConfiguration runConfiguration, ConfigurationContext configurationContext) {
-        boolean isSameFile = false;
-        return isSameFile;
+        return false;
     }
 }

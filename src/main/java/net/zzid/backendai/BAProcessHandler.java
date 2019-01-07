@@ -18,19 +18,18 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.execution.ExecutionException;
+
 
 import java.io.*;
 import java.util.*;
 
 public class BAProcessHandler extends ProcessHandler {
 
+    private final ClientConfig config;
     private String sessionId;
     private PipedInputStream  inputStream;
     private final PipedOutputStream outputStream;
-
-    private final String accessKey;
-    private final String secretKey;
-    private final String endPoint;
 
     private final String buildCmd;
     private final String execCmd;
@@ -39,22 +38,35 @@ public class BAProcessHandler extends ProcessHandler {
     private Kernel kernel;
 
 
-    public BAProcessHandler(String accessKey, String secretKey, String kernelType, String buildCmd, String execCmd, String endPoint) {
+    BAProcessHandler(String accessKey, String secretKey, String kernelType, String buildCmd, String execCmd, String endPoint, String sessionId) throws ExecutionException {
         super();
-        this.accessKey = accessKey;
-        this.secretKey = secretKey;
-        this.endPoint = endPoint;
 
         this.buildCmd = buildCmd;
         this.execCmd = execCmd;
 
         this.kernelType = kernelType;
         outputStream = new PipedOutputStream();
-        this.sessionId = null;
+        this.sessionId = sessionId;
         try {
             inputStream  = new PipedInputStream(outputStream);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        if (accessKey == null || accessKey.isEmpty() || secretKey == null || secretKey.isEmpty()) {
+            throw new ExecutionException("Backend AI Error : Configuration failed. Check your keys");
+        }
+
+
+        if (this.kernelType.equals("unknown")) {
+            throw new ExecutionException("nBackend AI Error : Can't find a suitable kernel");
+        }
+
+
+        try {
+            config = new ClientConfig.Builder().accessKey(accessKey).secretKey(secretKey).endPoint(endPoint).build();
+        } catch (ConfigurationException e) {
+            throw new ExecutionException("nBackend AI Error : Configuration failed. Check your keys.");
         }
     }
 
@@ -90,7 +102,6 @@ public class BAProcessHandler extends ProcessHandler {
     }
 
     public void start(Project project) {
-        ClientConfig config;
         final Map<String, String> files;
         try {
             files = scanFiles(project);
@@ -100,28 +111,8 @@ public class BAProcessHandler extends ProcessHandler {
             return;
         }
 
-        if (accessKey == null || accessKey.isEmpty() || secretKey == null || secretKey.isEmpty()) {
-            this.notifyTextAvailable("\nBackend AI Error : Configuration failed. Check your keys.", ProcessOutputTypes.SYSTEM);
-            terminateProcess();
-            return;
-        }
-        try {
-            config = new ClientConfig.Builder().accessKey(accessKey).secretKey(secretKey).endPoint(endPoint).build();
-        } catch (ConfigurationException e) {
-            this.notifyTextAvailable(String.format("\nBackend AI Error : Configuration failed. Check your keys."), ProcessOutputTypes.SYSTEM);
-            terminateProcess();
-            return;
-        }
-
-        if (this.kernelType.equals("unknown")) {
-            this.notifyTextAvailable(String.format("\nBackend AI Error : Can't find a suitable kernel."), ProcessOutputTypes.SYSTEM);
-            terminateProcess();
-            return;
-        }
-
         try {
             kernel = Kernel.getOrCreateInstance(this.sessionId, this.kernelType, config);
-            this.sessionId = kernel.getId();
         } catch (NetworkFailureException e) {
             this.notifyTextAvailable(String.format("\nBackend AI Error : Network error"), ProcessOutputTypes.SYSTEM);
             terminateProcess();
